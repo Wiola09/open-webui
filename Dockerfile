@@ -28,9 +28,14 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
+RUN npx update-browserslist-db@latest --update-db
 
 COPY . .
 ENV APP_BUILD_HASH=${BUILD_HASH}
+
+# Instaliraj Tailwind plugin ako nije instaliran
+RUN npm install @tailwindcss/typography --save-dev
+
 RUN npm run build
 
 ######## WebUI backend ########
