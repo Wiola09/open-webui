@@ -21,24 +21,16 @@ ARG UID=0
 ARG GID=0
 
 ######## WebUI frontend ########
-FROM --platform=$BUILDPLATFORM node:22-alpine3.20 AS build
+FROM --platform=$BUILDPLATFORM node:22-alpine3.20@sha256:b64ced2e7cd0a4816699fe308ce6e8a08ccba463c757c00c14cd372e3d2c763e AS build
 ARG BUILD_HASH
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
-RUN npx browserslist@latest --update-db
-
 
 COPY . .
 ENV APP_BUILD_HASH=${BUILD_HASH}
-
-# Instaliraj Tailwind plugin ako nije instaliran
-RUN npm install @tailwindcss/typography --save-dev
-
-# Rešavanje potencijalnih problema sa Node.js moduli putem fix-a
-RUN npm dedupe
 
 RUN npm run build
 
