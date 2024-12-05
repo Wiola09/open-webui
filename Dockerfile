@@ -28,13 +28,17 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
-RUN npx update-browserslist-db@latest --update-db
+RUN npx browserslist@latest --update-db
+
 
 COPY . .
 ENV APP_BUILD_HASH=${BUILD_HASH}
 
 # Instaliraj Tailwind plugin ako nije instaliran
 RUN npm install @tailwindcss/typography --save-dev
+
+# Rešavanje potencijalnih problema sa Node.js moduli putem fix-a
+RUN npm dedupe
 
 RUN npm run build
 
